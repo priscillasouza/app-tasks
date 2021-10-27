@@ -1,9 +1,8 @@
 package com.example.tasks.service.repository.remote
 
-import com.example.tasks.service.HeaderModel
+import com.example.tasks.service.model.HeaderModel
 import retrofit2.Call
 import retrofit2.http.Field
-import retrofit2.http.FieldMap
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
 
