@@ -134,4 +134,23 @@ class TaskRepository(val context: Context) {
 
         })
     }
+
+    fun delete(id: Int, listener: APIListener<Boolean>) {
+        val call: Call<Boolean> = mRemote.delete(id)
+        call.enqueue(object : Callback<Boolean> {
+            override fun onResponse(call: Call<Boolean>, response: Response<Boolean>) {
+                if(response.code() != TaskConstants.HTTP.SUCCESS) {
+                    val validation = Gson().fromJson(response.errorBody()!!.string(), String::class.java)
+                    listener.onFailure(validation)
+                } else {
+                    response.body()?.let { listener.onSuccess(it) }
+                }
+            }
+
+            override fun onFailure(call: Call<Boolean>, t: Throwable) {
+                listener.onFailure(context.getString(R.string.ERROR_UNEXPECTED))
+            }
+
+        })
+    }
 }
