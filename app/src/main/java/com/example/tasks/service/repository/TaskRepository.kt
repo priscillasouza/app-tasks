@@ -45,7 +45,7 @@ class TaskRepository(val context: Context) : BaseRepository(context) {
             ) {
                 if(response.code() != TaskConstants.HTTP.SUCCESS) {
                     val validation = Gson().fromJson(response.errorBody()!!.string(), String::class.java)
-                    listener.onFailure(validation)
+                    //listener.onFailure(validation)
                 } else {
                     response.body()?.let { listener.onSuccess(it) }
                 }

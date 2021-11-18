@@ -79,7 +79,8 @@
         android:hint="@string/clique_para_selecionar_a_data"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view_date" />
+        app:layout_constraintTop_toBottomOf="@+id/view_date"
+        />
 
     <View
         android:id="@+id/view_save"
@@ -96,6 +97,7 @@
         android:text="@string/adicionar_tarefa"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        style="@style/DefaultButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
