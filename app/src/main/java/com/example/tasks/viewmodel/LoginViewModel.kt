@@ -6,8 +6,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.tasks.service.model.HeaderModel
 import com.example.tasks.service.constants.TaskConstants
+import com.example.tasks.service.helper.FingerprintHelper
 import com.example.tasks.service.listener.APIListener
 import com.example.tasks.service.listener.ValidationListener
+import com.example.tasks.service.model.PriorityModel
 import com.example.tasks.service.repository.PersonRepository
 import com.example.tasks.service.repository.PriorityRepository
 import com.example.tasks.service.repository.local.SecurityPreferences
@@ -22,8 +24,8 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     private val mLogin = MutableLiveData<ValidationListener>()
     var login: LiveData<ValidationListener> = mLogin
 
-    private val mLoggedUser = MutableLiveData<Boolean>()
-    var loggedUser: LiveData<Boolean> = mLoggedUser
+    private val mFingerprint = MutableLiveData<Boolean>()
+    var fingerprint: LiveData<Boolean> = mFingerprint
 
     /**
      * Faz login usando API
@@ -48,22 +50,32 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
         })
     }
 
-    /**
-     * Verifica se usuário está logado
-     */
-    fun verifyLoggedUser() {
-        val token = mSharePreferences.get(TaskConstants.SHARED.TOKEN_KEY)
-        val person = mSharePreferences.get(TaskConstants.SHARED.PERSON_KEY)
+    fun isAuthenticationAvailable() {
+        val tokenKey = mSharePreferences.get(TaskConstants.SHARED.TOKEN_KEY)
+        val personKey = mSharePreferences.get(TaskConstants.SHARED.PERSON_KEY)
 
-        RetrofitClient.addHeader(token, person)
+        // Se o token e person key forem diferentes de vazio , usuário está logado
+        val everLogged = (tokenKey != "" && personKey != "")
 
-        val logged = (token != "" && person != "")
+        //Atualiza valores de Header para requisiçõe
+        RetrofitClient.addHeader(tokenKey, personKey)
 
-        if(!logged) {
-            mPriorityRepository.all()
+        // Se o usuário não estiver logado, a aplicação vai atualizar os dados
+        if(!everLogged) {
+            mPriorityRepository.all(object : APIListener<List<PriorityModel>> {
+                override fun onSuccess(model: List<PriorityModel>) {
+                    mPriorityRepository.save(model)
+                }
+
+                override fun onFailure(str: String) {
+                }
+
+            })
+
         }
 
-        mLoggedUser.value = logged
+        if(FingerprintHelper.isAutenticationAvailable(getApplication())) {
+            mFingerprint.value = everLogged
+        }
     }
-
 }

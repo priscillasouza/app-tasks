@@ -2,6 +2,7 @@ package com.example.tasks.service.repository
 
 import android.content.Context
 import com.example.tasks.service.constants.TaskConstants
+import com.example.tasks.service.listener.APIListener
 import com.example.tasks.service.model.PriorityModel
 import com.example.tasks.service.repository.local.TaskDatabase
 import com.example.tasks.service.repository.remote.PriorityService
@@ -15,7 +16,7 @@ open class PriorityRepository(val context: Context) : BaseRepository(context){
     private val mRemote = RetrofitClient.createService(PriorityService::class.java)
     private val mPriorityDataBase = TaskDatabase.getDatabase(context).priorityDAO()
 
-    fun all() {
+    fun all(param: APIListener<List<PriorityModel>>) {
 
         if(!isConnectionAvailable(context)) {
             return
@@ -43,5 +44,7 @@ open class PriorityRepository(val context: Context) : BaseRepository(context){
     fun list() = mPriorityDataBase.list()
 
     fun getDescription(id: Int) = mPriorityDataBase.getDescription(id)
+
+    fun save(model: List<PriorityModel>) {}
 
 }
